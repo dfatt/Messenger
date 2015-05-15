@@ -18,7 +18,7 @@ $this->title = 'Messenger';
 				<br>
 				<small><?php echo date("d M H:i", strtotime($message->created_at)) ?></small>
 				<a class="like" href="#">Like <span><?= count($message->likes) > 0 ? count($message->likes) : '' ?></span></a>
-				<br><a href="#" id="delete">Удалить</a>
+				<? if ($message->user_name === Yii::$app->user->identity->username): ?> <br><a href="#" id="delete">Удалить</a><? endif ?>
 			</div>
 		<?php endforeach; ?>
 	</div>
@@ -39,8 +39,12 @@ $this->title = 'Messenger';
 			</button>
 			<ul class="dropdown-menu" role="menu" aria-labelledby="attach">
 				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="add-pictures-link">Picture</a></li>
+
 				<li role="presentation" class="divider"></li>
 				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="add-video-link">Youtube Video</a></li>
+
+				<li role="presentation" class="divider"></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="#" class="add-url-link">Link</a></li>
 			</ul>
 		</div>
 
@@ -67,11 +71,30 @@ $this->title = 'Messenger';
 		</div>
 
 		<div class="dialog add-video-dialog" id="add-video">
-			<div class="form-group">
-				<label for="video-url">Ссылка на видео</label>
-				<input type="email" class="form-control" id="video-url" placeholder="">
+			<div id="video-form">
+				<div class="form-group">
+					<label for="video-url">Ссылка на видео</label>
+					<input class="form-control" id="video-url" placeholder="">
+				</div>
+
+				<a href="#" class="add-video pull-left btn btn-xs btn-primary">Add Video</a>
 			</div>
-			<a href="#" class="add-video pull-left btn btn-xs btn-primary">Add Video</a>
+
+			<span id="success_video"></span>
+			<a href="#" class="close-dialog pull-right btn btn-xs  btn-default">Close</a>
+		</div>
+
+		<div class="dialog add-url-dialog" id="add-url">
+			<div id="url-form">
+				<div class="form-group">
+					<label for="url">Ссылка</label>
+					<input class="form-control" id="url" placeholder="">
+				</div>
+
+				<a href="#" class="add-url pull-left btn btn-xs btn-primary">Add Link</a>
+			</div>
+
+			<span id="success_url"></span>
 			<a href="#" class="close-dialog pull-right btn btn-xs  btn-default">Close</a>
 		</div>
 

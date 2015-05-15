@@ -40,7 +40,7 @@ class User extends ActiveRecord implements IdentityInterface {
 		if (isset($user)) {
 			return new static($user);
 		} else {
-			$user = new User;
+			$user = new User();
 			$user->username = $username;
 
 			$user->save();

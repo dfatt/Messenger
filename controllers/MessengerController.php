@@ -7,8 +7,8 @@ use app\models\Message;
 use app\models\UploadForm;
 use Yii;
 use yii\filters\AccessControl;
-use yii\web\Controller;
 use yii\filters\VerbFilter;
+use yii\web\Controller;
 use yii\web\Response;
 use yii\web\UploadedFile;
 
@@ -96,13 +96,22 @@ class MessengerController extends Controller {
 	public function actionNewLike() {
 		$msg = Yii::$app->request->post();
 
-		$like             = new Like();
-		$like->message_id = $msg['message_id'];
-		$like->user_name  = $msg['user_name'];
+		$user_set_like = (int) Like::find()->where([
+			'message_id' => $msg['message_id'],
+			'user_name'  => $this->current_user
+		])->count();
 
-		$like->save();
+		if ($user_set_like === 0) {
+			$like             = new Like();
+			$like->message_id = $msg['message_id'];
+			$like->user_name  = $msg['user_name'];
 
-		return Like::find()->where(['message_id' => $msg['message_id']])->count();
+			$like->save();
+
+			return Like::find()->where(['message_id' => $msg['message_id']])->count();
+		} else {
+			return false;
+		}
 	}
 
 	/**

@@ -104,6 +104,9 @@ $(function () {
 					case 'video':
 						attach_to_string += '<iframe src="https://www.youtube.com/embed/' + value.content + '" frameborder="0" allowfullscreen></iframe>';
 						break;
+					case 'link':
+						attach_to_string += '<p><a href="' + value.content + '">Ссылка</a></p>';
+						break;
 				}
 			});
 
@@ -204,10 +207,14 @@ $(function () {
 				case 'video':
 					attach_to_string += '<iframe src="https://www.youtube.com/embed/' + value.content + '" frameborder="0" allowfullscreen></iframe>';
 					break;
+				case 'link':
+					attach_to_string += '<p><a href="' + value.content + '">Ссылка</a></p>';
+					break;
 			}
 		});
 
-		var msg = $('<div class="message" id="' + id + '"><h4>' + user_name + ' says:</h4>' + content + attach_to_string + '<br><br><small>' + created_at + '</small><a class="like" href="#">Like <span></span></a><br><a href="#" id="delete">Удалить</a></div>');
+		var delete_link = user === user_name ? '<a href="#" id="delete">Удалить</a>' : '';
+		var msg = $('<div class="message" id="' + id + '"><h4>' + user_name + ' says:</h4>' + content + attach_to_string + '<br><br><small>' + created_at + '</small><a class="like" href="#">Like <span></span></a><br>' + delete_link + '</div>');
 
 		$('.messages').append(msg);
 		msg.hide().fadeIn(500);
@@ -254,6 +261,11 @@ $(function () {
 		return false;
 	});
 
+	$('.add-url-link').on('click', function () {
+		$('.add-url-dialog').fadeIn();
+		return false;
+	});
+
 	/**
 	 * Закрытие диалогового окна
 	 */
@@ -267,12 +279,38 @@ $(function () {
 	 */
 	$('.add-video').on('click', function () {
 		var video_url = $('#video-url').val();
-		attaches.push({
-			type: 'video',
-			content: youTubeGetId(video_url)
-		});
+		var youtube_id = youTubeGetId(video_url);
 
-		$('.dialog').fadeOut();
+		if (youtube_id) {
+			attaches.push({
+				type: 'video',
+				content: youtube_id
+			});
+
+			$('#video-form').hide();
+			$('#success_video').hide().fadeIn().text('Видео было добавлено к сообщению');
+		} else {
+			alert('Убедитесь в правильности ссылки на видео');
+		}
+
+		return false;
+	});
+
+	$('.add-url').on('click', function () {
+		var url = $('#url').val();
+
+		if (validationUrl(url)) {
+			attaches.push({
+				type: 'link',
+				content: url
+			});
+
+			$('#url-form').hide();
+			$('#success_url').hide().fadeIn().text('Ссылка добавлена к сообщению');
+		} else {
+			alert('Убедитесь в правильности ссылки');
+		}
+
 		return false;
 	});
 
@@ -297,6 +335,24 @@ $(function () {
 	 * @returns {*|Array|{index: number, input: string}}
 	 */
 	function youTubeGetId(url) {
-		return url.match(/watch\?v=([a-zA-Z0-9\-_]+)/)[1];
+		var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+		var video = (url.match(p)) ? RegExp.$1 : false;
+
+		if (video) {
+			return video;
+		} else {
+			return false;
+		}
+	}
+
+	function validationUrl(url) {
+		var p = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
+		var link = (url.match(p)) ? RegExp.$1 : false;
+
+		if (link) {
+			return link;
+		} else {
+			return false;
+		}
 	}
 });
