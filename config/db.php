@@ -2,8 +2,8 @@
 
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=messenger',
+    'dsn' => 'mysql:host=127.0.0.1;dbname=messenger',
     'username' => 'root',
-    'password' => 'root',
+    'password' => '',
     'charset' => 'utf8',
 ];

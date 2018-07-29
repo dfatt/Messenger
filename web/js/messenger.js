@@ -16,7 +16,7 @@ $(function () {
 	var user = $('#user').val();
 	var attaches = [];
 
-	var conn = new WebSocket('ws://localhost:8080');
+	var conn = new WebSocket('ws://localhost:8888');
 
 	/**
 	 *

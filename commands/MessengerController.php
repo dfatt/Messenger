@@ -22,7 +22,7 @@ class MessengerController extends Controller {
 					new Messenger()
 				)
 			),
-			8080
+			8888
 		);
 
 		$server->run();
